@@ -52,8 +52,8 @@ inputs:
     required: false
     default: 'false'
 runs:
-  using: 'node16'
-  main: 'index.js'
+  using: 'node24'
+  main: 'dist/index.js'
 branding:
   icon: file-text
   color: blue

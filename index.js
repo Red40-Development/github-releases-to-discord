@@ -1,6 +1,5 @@
-import core from '@actions/core';
-import github from '@actions/github';
-import fetch from 'node-fetch';
+import * as core from '@actions/core';
+import * as github from '@actions/github';
 import { fileURLToPath } from 'node:url';
 
 /**
@@ -196,9 +195,9 @@ const limitString = (str, maxLength, url, clipAtLine = false) => {
     maxLength -= replacement.length;
     str = str.substring(0, maxLength);
 
-    const lastNewline = str.search(new RegExp(`[^${clipAtLine ? '\n' : '\s'}]*$`));
-    if (lastNewline > -1) {
-        str = str.substring(0, lastNewline);
+    const lastBreak = str.search(clipAtLine ? /[^\n]*$/ : /\S*$/);
+    if (lastBreak > 0) {
+        str = str.substring(0, lastBreak);
     }
 
     return str + replacement;

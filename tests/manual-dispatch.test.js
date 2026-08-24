@@ -43,16 +43,14 @@ beforeEach(() => {
 });
 
 jest.unstable_mockModule('@actions/core', () => ({
-    default: coreMock
+    ...coreMock
 }));
 
 jest.unstable_mockModule('@actions/github', () => ({
-    default: githubMock
+    ...githubMock
 }));
 
-jest.unstable_mockModule('node-fetch', () => ({
-    default: fetchMock
-}));
+globalThis.fetch = fetchMock;
 
 describe('manual dispatch integration', () => {
     test('run() posts a Discord embed using manual workflow inputs', async () => {

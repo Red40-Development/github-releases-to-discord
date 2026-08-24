@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
       - name: GitHub Releases to Discord
         uses: SethCohen/github-releases-to-discord@v1
         with:
@@ -190,7 +190,12 @@ jobs:
 We welcome contributions! To get started:
 
 1. **Fork** this repository.
-2. **Clone** your fork and run `npm install`.
+2. **Clone** your fork, enable Corepack, and install dependencies with pnpm:
+
+   ```bash
+   corepack enable
+   pnpm install
+   ```
 3. **Create a test release payload:**
    - Copy `tests/sample-test-release.json` and edit as needed.
 4. **Create a `.env` file** in the root with your webhook and config (see below):
@@ -207,8 +212,15 @@ We welcome contributions! To get started:
    act release -e tests/sample-test-release.json
    ```
 
-6. **Make your changes** and commit using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
-7. **Open a pull request** with a clear description of your changes.
+6. **Run the test suite and rebuild the action bundle:**
+
+   ```bash
+   pnpm test
+   pnpm build
+   ```
+
+7. **Make your changes** and commit using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+8. **Open a pull request** with a clear description of your changes.
 
 ---
 

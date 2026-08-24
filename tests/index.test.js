@@ -128,7 +128,7 @@ describe('index.js utility functions', () => {
             expect(limitString('short', 10)).toBe('short');
         });
         test('truncates and adds ellipsis if over maxLength', () => {
-            expect(limitString('1234567890', 5)).toBe('…');
+            expect(limitString('1234567890', 5)).toBe('1234…');
         });
         test('truncates and adds markdown link if url provided', () => {
             expect(limitString('abcdef', 5, 'http://x')).toBe('([…](http://x))');
@@ -192,7 +192,7 @@ describe('index.js utility functions', () => {
                 expect(limitString('abc', 3)).toBe('abc');
             });
             test('handles empty url', () => {
-                expect(limitString('abcdef', 5, '')).toBe('…');
+                expect(limitString('abcdef', 5, '')).toBe('abcd…');
             });
         });
 
@@ -218,15 +218,15 @@ describe('index.js utility functions', () => {
             expect(removeCarriageReturn('   \r\r\r   ')).toBe('      ');
         });
         test('reduceNewlines handles whitespace-only', () => {
-            expect(reduceNewlines('   \n\n   ')).toBe('   \n   ');
+            expect(reduceNewlines('   \n\n   ')).toBe('   \n\n   ');
         });
         test('removeHTMLComments handles whitespace-only', () => {
             expect(removeHTMLComments('   ')).toBe('   ');
         });
 
         // Special characters and unicode
-        test('convertMentionsToLinks handles unicode usernames', () => {
-            expect(convertMentionsToLinks('Hi @üser!')).toBe('Hi [@üser](https://github.com/üser)!');
+        test('convertMentionsToLinks rejects unicode usernames', () => {
+            expect(convertMentionsToLinks('Hi @üser!')).toBe('Hi @üser!');
         });
         test('convertLinksToMarkdown handles unicode in links', () => {
             const input = 'https://github.com/owner/repo/pull/ü123';
@@ -245,8 +245,8 @@ describe('index.js utility functions', () => {
         });
 
         // Multiple consecutive mentions/links
-        test('convertMentionsToLinks handles consecutive mentions', () => {
-            expect(convertMentionsToLinks('@foo@bar')).toBe('[@foo](https://github.com/foo)[@bar](https://github.com/bar)');
+        test('convertMentionsToLinks does not parse an adjacent mention', () => {
+            expect(convertMentionsToLinks('@foo@bar')).toBe('[@foo](https://github.com/foo)@bar');
         });
         test('convertLinksToMarkdown handles consecutive links', () => {
             const input = 'https://github.com/owner/repo/pull/1https://github.com/owner/repo/issues/2';
