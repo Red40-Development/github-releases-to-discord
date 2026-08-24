@@ -15,5 +15,20 @@ jobs:
     steps:
       - uses: googleapis/release-please-action@v5
         id: release
+      - name: Checkout the released commit
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/checkout@v7
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          fetch-depth: 0
+      - name: Update major and minor tags
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          RELEASE_SHA: ${{ steps.release.outputs.sha }}
+          RELEASE_MAJOR: ${{ steps.release.outputs.major }}
+          RELEASE_MINOR: ${{ steps.release.outputs.minor }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git tag --force --annotate "v${RELEASE_MAJOR}" "${RELEASE_SHA}" --message "Release v${RELEASE_MAJOR}"
+          git tag --force --annotate "v${RELEASE_MAJOR}.${RELEASE_MINOR}" "${RELEASE_SHA}" --message "Release v${RELEASE_MAJOR}.${RELEASE_MINOR}"
+          git push origin --force "v${RELEASE_MAJOR}" "v${RELEASE_MAJOR}.${RELEASE_MINOR}"
